@@ -158,14 +158,14 @@ const jobConfig = [
 ];
 const jobManager = new JobManager(jobConfig, 3);
 jobManager.start().then(data => {
-    console.log('first', data);
-}).catch(e => console.log('first error', e));
+    console.log('全流程：', data);
+}).catch(e => console.log('全流程错误：', e));
 setTimeout(() => {
     jobManager.setStartData(4);
     jobManager.start().then(data => {
-        console.log('1500: first', data);
-    }).catch(e => console.log('1500: first error', e));
+        console.log('1.5s后全流程：', data);
+    }).catch(e => console.log('1.5s后全流程错误：', e));
     jobManager.start('p2').then(data => {
-        console.log('1500: only p2', data);
-    }).catch(e => console.log('1500: only p2 error', e));
+        console.log('1.5s后流程p2：', data);
+    }).catch(e => console.log('1.5s后流程p2错误：', e));
 }, 1500);
