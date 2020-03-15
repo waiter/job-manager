@@ -1,0 +1,23 @@
+{
+  "name": "job-manager",
+  "version": "1.0.0",
+  "description": "something",
+  "main": "JobManager.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waiter/job-manager.git"
+  },
+  "author": "waiter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/waiter/job-manager/issues"
+  },
+  "homepage": "https://github.com/waiter/job-manager#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "jest": "^25.1.0"
+  }
+}
