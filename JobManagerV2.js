@@ -1,5 +1,5 @@
 class JobManager {
-  constructor(config, startData = null) {
+  constructor(config, startData = null, debounceTime = 500) {
     // 缓存流程配置
     this.config = [];
     // 缓存流程中产出结果
@@ -15,6 +15,8 @@ class JobManager {
         ...it,
       });
     });
+    // 记录去抖动延时
+    this.debounceTime = debounceTime;
     // 重置任务状态
     this.resetCurrent();
   }
@@ -69,19 +71,23 @@ class JobManager {
     });
   }
 
+  cloneObject(obj) {
+    return obj ? JSON.parse(JSON.stringify(obj)) : null;
+  }
+
   runJob() {
     const { step, reject: beforeReject } = this.current;
     const job = this.config[step];
-    const data = this.cacheData[step - 1];
+    const data = this.cloneObject(this.cacheData[step - 1]);
     const jobId = this.jobId;
     try {
       const funcOrData = job.func ? job.func(data) : data;
       if (typeof funcOrData === 'function') {
         const timer = setTimeout(() => {
-          this.current.reject = beforeReject;
           if (jobId !== this.jobId) {
             return;
           }
+          this.current.reject = beforeReject;
           funcOrData().then(d => {
             // 丢弃历史结果
             if (jobId === this.jobId) {
@@ -94,7 +100,7 @@ class JobManager {
               this.error(e);
             }
           });
-        }, 500);
+        }, this.debounceTime);
         this.current.reject = (...arg) => {
           clearTimeout(timer);
           beforeReject(...arg);
