@@ -4,7 +4,7 @@ class JobManager {
     this.config = [];
     // 缓存流程中产出结果
     this.cacheData = {
-      '-1': startData,
+      '-1': this.cloneObject(startData),
     };
     // 记录当前执行中的任务Id
     this.jobId = 0;
@@ -82,7 +82,9 @@ class JobManager {
     const jobId = this.jobId;
     try {
       const funcOrData = job.func ? job.func(data) : data;
+      // 如果是函数，则表示是异步任务
       if (typeof funcOrData === 'function') {
+        // 延时执行
         const timer = setTimeout(() => {
           if (jobId !== this.jobId) {
             return;
@@ -101,11 +103,13 @@ class JobManager {
             }
           });
         }, this.debounceTime);
+        // 方便停止延时任务
         this.current.reject = (...arg) => {
           clearTimeout(timer);
           beforeReject(...arg);
         };
       } else {
+        // 同步任务
         this.cacheData[step] = funcOrData;
         this.next();
       }
